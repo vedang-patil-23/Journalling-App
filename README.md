@@ -24,7 +24,7 @@ A simple and elegant personal journaling application to help you capture your th
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/vedang-patil-23/Journalling-App.git
    cd journaling
    ```
 
