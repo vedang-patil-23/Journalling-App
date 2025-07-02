@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}My Journal{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1 class="mb-4"><i class="fas fa-book-open me-2"></i>My Journal</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('add_entry') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Add Entry
+        </a>
+    </div>
+</div>
+
+<!-- Search and Filter Section -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="search" class="form-label">Search</label>
+                <input type="text" class="form-control" id="search" name="search" placeholder="Search titles or content..." value="{{ search_query }}">
+            </div>
+            <div class="col-md-3">
+                <label for="mood" class="form-label">Mood</label>
+                <select class="form-select" id="mood" name="mood">
+                    <option value="all" {% if filter_mood == 'all' %}selected{% endif %}>All Moods</option>
+                    <option value="Happy" {% if filter_mood == 'Happy' %}selected{% endif %}>Happy</option>
+                    <option value="Sad" {% if filter_mood == 'Sad' %}selected{% endif %}>Sad</option>
+                    <option value="Neutral" {% if filter_mood == 'Neutral' %}selected{% endif %}>Neutral</option>
+                    <option value="Excited" {% if filter_mood == 'Excited' %}selected{% endif %}>Excited</option>
+                    <option value="Anxious" {% if filter_mood == 'Anxious' %}selected{% endif %}>Anxious</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="tag" class="form-label">Tag</label>
+                <input type="text" class="form-control" id="tag" name="tag" placeholder="Filter by tag..." value="{{ filter_tag }}">
+            </div>
+             <div class="col-md-2">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date" name="date" value="{{ filter_date }}">
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-filter"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Journal Entries List -->
+<div class="row row-cols-1 g-4">
+    {% for entry in entries %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <h5 class="card-title mb-1">
+                            <a href="{{ url_for('view_entry', id=entry.id) }}" class="text-decoration-none text-dark">
+                                {{ entry.title }}
+                            </a>
+                        </h5>
+                        <small class="text-muted">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ entry.entry_date.strftime('%Y-%m-%d') }}
+                        </small>
+                    </div>
+                    <span class="badge bg-secondary ms-2 mood-{{ entry.mood|lower if entry.mood else 'neutral' }}">
+                        <i class="fas fa-smile me-1"></i> {{ entry.mood|capitalize if entry.mood else 'Neutral' }}
+                    </span>
+                </div>
+                <p class="card-text text-muted small">{{ entry.content[:200] }}{% if entry.content|length > 200 %}...{% endif %}</p>
+                {% if entry.tags %}
+                <div class="mt-2">
+                    {% for tag in entry.tags.split(',') %}
+                    <span class="tag">{{ tag.strip() }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-transparent d-flex justify-content-end align-items-center">
+                <a href="{{ url_for('edit_entry', id=entry.id) }}" class="btn btn-sm btn-outline-primary me-2">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <form action="{{ url_for('delete_entry', id=entry.id) }}" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this entry?')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle me-2"></i>
+            No journal entries found. Start writing your first entry!
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %} 
