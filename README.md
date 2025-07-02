@@ -106,5 +106,5 @@ journaling/
 
 ## 📚 Related Projects
 Check out my other summer 2023 projects:
-- [Expense Tracker](https://github.com/vedang-patil-23/expense-tracker)
+- [Expense Tracker](https://github.com/vedang-patil-23/college-expense-tracker)
 - [Habit Tracker](https://github.com/vedang-patil-23/habit-tracker)
